@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grooming Form</title>
+<style>
+  /* Your existing CSS styles */
+  /* Add styles for modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2), 0 6px 20px rgba(0,0,0,0.2);
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  form {
+    margin-top: 20px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  input[type="text"],
+  input[type="tel"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  input[type="submit"] {
+    width: 100%;
+    background-color: #0060cd;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: ease-out 0.2s;
+  }
+  input[type="submit"]:hover {
+    background-color: #b700c8;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <img src="assets\GLC_logo_-removebg-preview.png" alt="Your Logo" style="display: block; margin: 0 auto; width: 40%;">
+  <h2>Sales Form</h2>
+
+  <form id="groomingForm" method="post">
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required>
+
+    <label for="customer">Customer Name:</label>
+    <input type="text" id="customer" name="customer" required>
+
+    <label for="cell">CellPhone Number:</label>
+    <input type="tel" id="cell" name="cell" required>
+
+    <label for="dogs">Amount of Dogs:</label>
+    <input type="number" id="dogs" name="dogs" required>
+
+    <label for="groomer">Groomer Name:</label>
+    <input type="text" id="groomer" name="groomer" required>
+
+    <!-- Hidden field for Work area -->
+    <input type="hidden" id="work_area" name="work_area" value="parlout">
+
+    <label for="payment_type">Payment type:</label>
+    <select id="payment_type" name="payment_type" required>
+      <option value="cash">Cash</option>
+      <option value="card">Card</option>
+      <option value="check">EFT</option>
+      <option value="check">Wash Club</option>
+    </select>
+
+    <label for="grooming_amount">Grooming Amount:</label>
+    <input type="number" id="grooming_amount" name="grooming_amount" required>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" rows="4" cols="50"></textarea>
+
+    <label for="sales_amount">Sales Amount:</label>
+    <input type="number" id="sales_amount" name="sales_amount" required>
+
+    <label for="total_amount">Total Amount:</label>
+    <input type="number" id="total_amount" name="total_amount" required>
+
+    <br>
+    <input type="submit" value="Submit">
+  </form> 
+</div>
+
+<!-- Modal popup -->
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <!-- Popup content -->
+    <h2>Confirm Submission</h2>
+    <p>Are you sure you want to submit the form with the following details?</p>
+    <div id="popup-details"></div>
+    <button id="confirm-submit">Confirm</button>
+    <button id="cancel-submit">Cancel</button>
+  </div>
+</div>
+
+<!-- Initialize Firebase -->
+<script>
+document.getElementById("date").valueAsDate = new Date();
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+document.querySelector('input[type="submit"]').addEventListener('click', function(event) {
+  event.preventDefault(); // Prevent form submission
+  // Get form data
+  var formData = new FormData(document.getElementById("groomingForm"));
+  var details = "<p><strong>Date:</strong> " + formData.get('date') + "</p>" +
+                "<p><strong>Customer Name:</strong> " + formData.get('customer') + "</p>" +
+                "<p><strong>CellPhone Number:</strong> " + formData.get('cell') + "</p>" +
+                "<p><strong>Amount of Dogs:</strong> " + formData.get('dogs') + "</p>" +
+                "<p><strong>Groomer Name:</strong> " + formData.get('groomer') + "</p>" +
+                "<p><strong>Payment Type:</strong> " + formData.get('payment_type') + "</p>" +
+                "<p><strong>Grooming Amount:</strong> " + formData.get('grooming_amount') + "</p>" +
+                "<p><strong>Description:</strong> " + formData.get('description') + "</p>" +
+                "<p><strong>Sales Amount:</strong> " + formData.get('sales_amount') + "</p>" +
+                "<p><strong>Total Amount:</strong> " + formData.get('total_amount') + "</p>";
+  // Set popup details
+  document.getElementById("popup-details").innerHTML = details;
+  // Display modal
+  modal.style.display = "block";
+});
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Handle confirm and cancel buttons
+// document.getElementById("confirm-submit").addEventListener('click', function() {
+//   document.getElementById("groomingForm").submit(); // Submit the form
+// });
+
+document.getElementById("cancel-submit").addEventListener('click', function() {
+  modal.style.display = "none"; // Close the modal
+});
+</script>
+
+</body>
+</html>
